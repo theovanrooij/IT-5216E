@@ -27,10 +27,22 @@ def Login():
 @app.route('/questions', methods=['POST'])
 def postQuestions():
    #Récupérer le token envoyé en paramètre
-    request.headers.get('Authorization')
+    token_received = request.headers.get('Authorization')
+    try :
+        jwt_utils.decode_token(token_received[7:])
+    except TypeError:
+        return {"message" : "Veuillez vous authentifier"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
+
     #récupèrer un l'objet json envoyé dans le body de la requète
     question_json = request.get_json()
     return services.postQuestions(question_json)
+
+@app.route('/questions/<questionID>', methods=['GET'])
+def getQuestionByID(questionID):
+
+    return services.getQuestionsByID(questionID)
 
 if __name__ == "__main__":
     app.run()

@@ -36,3 +36,34 @@ def postQuestions(question_json):
 
 
     return {"id":cur.lastrowid}, 200
+
+
+
+def getQuestionsByID(id):
+
+    # create a connection
+    db_connection = sqlite3.connect("./quiz.db")
+
+    # set the sqlite connection in "manual transaction mode"
+    # (by default, all execute calls are performed in their own transactions, not what we want)
+    db_connection.isolation_level = None
+
+    cur = db_connection.cursor()
+    # start transaction
+    cur.execute("begin")
+
+    try:
+    # Use the cursor to execute an INSERT statement
+        cur.execute(
+        f"SELECT * FROM Question where id = {id}")
+        for id,position,title,text,image in cur :
+            question = Question()
+
+            question.init(id,position,title,text,image)
+            print(id,position,title,text,image)
+            return question.to_json(), 200
+    except sqlite3.Error as e:
+    # If an error occurred, print the error message
+        return {"error" : {e.args[0]}}, 500
+
+    return cur.fetchone(), 200
