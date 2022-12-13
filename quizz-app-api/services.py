@@ -16,11 +16,17 @@ def postQuestions(question_json):
     # start transaction
     cur.execute("begin")
 
-    # save the question to db
-    insertion_result = cur.execute(
+    try:
+    # Use the cursor to execute an INSERT statement
+        insertion_result = cur.execute(
         f"insert into Question (position,title,text,image) values"
-        f"('{input_question.position}','{input_question.title}',"
-        f"'{input_question.text}','{input_question.image}')")
+        f"({input_question.position!r},{input_question.title!r},"
+        f"{input_question.text!r},{input_question.image!r})")
+
+    except sqlite3.Error as e:
+    # If an error occurred, print the error message
+        print(f"An error occurred: {e.args[0]}")
+        return {"error" : {e.args[0]}}, 500
 
     # send the request
     cur.execute("commit")
@@ -29,4 +35,4 @@ def postQuestions(question_json):
     # cur.execute('rollback')
 
 
-    return input_question.to_json(), 200
+    return {"id":cur.lastrowid}, 200
