@@ -42,7 +42,14 @@ def postQuestions():
 @app.route('/questions/<questionID>', methods=['GET'])
 def getQuestionByID(questionID):
 
-    return services.getQuestionsByID(questionID)
+    return services.getQuestionByID(questionID)
+
+@app.route('/questions', methods=['GET'])
+def getQuestionByPosition():
+    position = request.args.get("position")
+    if position :
+        return services.getQuestionByPosition(position)
+    return {"message" : "Veuillez préciser une position"}, 404
 
 if __name__ == "__main__":
     app.run()
