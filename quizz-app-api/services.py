@@ -44,6 +44,14 @@ def executeSelectStatement(statement):
     else :
         return response, status_code
 
+def executeUpdateStatement(statement):
+    response,status_code = executeStatement(statement)
+    if status_code == 200 :
+        response.execute("commit")
+        return {},204
+    else :
+        return response, status_code
+
 def executeDeleteStatement(statement):
     response,status_code = executeStatement(statement)
     if status_code == 200 :
@@ -72,14 +80,22 @@ def postQuestions(question_json):
         f"({input_question.position!r},{input_question.title!r},"
         f"{input_question.text!r},{input_question.image!r})")
 
-def postQuestions(question_json):
+def updateQuestion(question_json,idQuestion):
     input_question = Question()
     input_question.from_json(question_json)
 
-    return executeInsertStatement(
-        f"insert into Question (position,title,text,image) values"
-        f"({input_question.position!r},{input_question.title!r},"
-        f"{input_question.text!r},{input_question.image!r})")
+    question_json,status = getQuestionByID(idQuestion)
+
+    if status == 200 :
+
+        return executeUpdateStatement(
+            f"UPDATE Question SET position = {input_question.position!r},"
+            f"title = {input_question.title!r},"
+            f"text = {input_question.text!r},"
+            f"image = {input_question.image!r} WHERE id = {idQuestion!r}")
+            
+    return question_json,status
+
 
 def selectQuestion(statement):
     response,status_code = executeSelectStatement(statement)

@@ -65,6 +65,20 @@ def deleteQuestionByID(idQuestion):
 
     return services.deleteQuestionByID(idQuestion)
 
+@app.route('/questions/<idQuestion>', methods=['PUT'])
+def updateQuestion(idQuestion):
+   #Récupérer le token envoyé en paramètre
+    token_received = request.headers.get('Authorization')
+    try :
+        jwt_utils.decode_token(token_received[7:])
+    except TypeError:
+        return {"message" : "Veuillez vous authentifier"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
+
+    question_json = request.get_json()
+    return services.updateQuestion(question_json,idQuestion)
+
 @app.route('/questions/<questionID>', methods=['GET'])
 def getQuestionByID(questionID):
 
