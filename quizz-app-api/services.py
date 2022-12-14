@@ -19,7 +19,7 @@ def executeStatement(statement) :
     cur = getDbCursor()
     try:
     # Use the cursor to execute an INSERT statement
-        insertion_result = cur.execute(statement)
+        cur.execute(statement)
         # send the request
 
         return cur, 200
@@ -43,6 +43,34 @@ def executeSelectStatement(statement):
         return response,status_code
     else :
         return response, status_code
+
+def executeDeleteStatement(statement):
+    response,status_code = executeStatement(statement)
+    if status_code == 200 :
+        response.execute("commit")
+        return {},204
+    else :
+        return response, status_code
+
+def deleteAllQuestions():
+    return executeDeleteStatement("DELETE FROM Question")
+
+def deleteQuestionByID(id):
+    question_json,status = getQuestionByID(id)
+
+    if status == 200 :
+        return executeDeleteStatement(f"DELETE FROM Question where id = {id}")
+
+    return question_json,status
+
+def postQuestions(question_json):
+    input_question = Question()
+    input_question.from_json(question_json)
+
+    return executeInsertStatement(
+        f"insert into Question (position,title,text,image) values"
+        f"({input_question.position!r},{input_question.title!r},"
+        f"{input_question.text!r},{input_question.image!r})")
 
 def postQuestions(question_json):
     input_question = Question()

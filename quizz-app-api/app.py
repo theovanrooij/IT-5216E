@@ -39,6 +39,32 @@ def postQuestions():
     question_json = request.get_json()
     return services.postQuestions(question_json)
 
+@app.route('/questions/all', methods=['DELETE'])
+def deleteAllQuestions():
+   #Récupérer le token envoyé en paramètre
+    token_received = request.headers.get('Authorization')
+    try :
+        jwt_utils.decode_token(token_received[7:])
+    except TypeError:
+        return {"message" : "Veuillez vous authentifier"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
+
+    return services.deleteAllQuestions()
+
+@app.route('/questions/<idQuestion>', methods=['DELETE'])
+def deleteQuestionByID(idQuestion):
+   #Récupérer le token envoyé en paramètre
+    token_received = request.headers.get('Authorization')
+    try :
+        jwt_utils.decode_token(token_received[7:])
+    except TypeError:
+        return {"message" : "Veuillez vous authentifier"} ,401
+    except Exception as e:
+        return e.__dict__ ,401
+
+    return services.deleteQuestionByID(idQuestion)
+
 @app.route('/questions/<questionID>', methods=['GET'])
 def getQuestionByID(questionID):
 
