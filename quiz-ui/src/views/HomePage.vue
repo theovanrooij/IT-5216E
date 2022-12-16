@@ -10,7 +10,7 @@
 </template>
 
 <script>
-{/* <style> <p> Test </p></style> */}
+// {/* <style> <p> Test </p></style> */}
 import quizApiService from "@/services/QuizApiService";
 
 export default {
