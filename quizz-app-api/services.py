@@ -1,4 +1,4 @@
-from models import Question
+from models import Question,Answer
 import sqlite3
 
 
@@ -73,12 +73,36 @@ def deleteQuestionByID(id):
 
 def postQuestions(question_json):
     input_question = Question()
+    # print(question_json)
+    input_answers = [Answer() for answer in question_json["possibleAnswers"]]
+
+    answer =question_json["possibleAnswers"][0]
+    for i,answer_json in enumerate(question_json["possibleAnswers"]) :
+        input_answers[i].from_json(answer_json.copy())
+
+    question_json["possibleAnswers"] = input_answers
     input_question.from_json(question_json)
 
-    return executeInsertStatement(
+    insert_question,status_question = executeInsertStatement(
         f"insert into Question (position,title,text,image) values"
         f"({input_question.position!r},{input_question.title!r},"
         f"{input_question.text!r},{input_question.image!r})")
+
+    if not status_question == 200 :
+        return insert_question,status_question
+
+    insert_answer_string = ""
+    for answer in input_answers :
+       insert_answer_string += f"({insert_question['id']!r},{answer.text!r},{answer.isCorrect!r}),"
+
+    insert_answer,status_answer = executeInsertStatement(
+        f"insert into Reponse (id_question,text,isCorrect) values"
+        f"{insert_answer_string[:-1]}")
+
+    if not status_answer == 200 :
+        return insert_answer,status_answer
+
+    return insert_question,200
 
 def updateQuestion(question_json,idQuestion):
     input_question = Question()
@@ -93,7 +117,7 @@ def updateQuestion(question_json,idQuestion):
             f"title = {input_question.title!r},"
             f"text = {input_question.text!r},"
             f"image = {input_question.image!r} WHERE id = {idQuestion!r}")
-            
+
     return question_json,status
 
 
