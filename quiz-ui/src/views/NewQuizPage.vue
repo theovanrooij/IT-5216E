@@ -38,8 +38,7 @@ export default {
     launchNewQuiz(){
       participationStorageService.savePlayerName(this.username.toString());
       const playerName = participationStorageService.getPlayerName();
-      // const playerName = window.localStorage.getItem("playerName");
-      console.log("Launch new quiz with", playerName);
+      console.log("Launch new quiz with " + playerName);
       // this.$router.push('/questions');
     },
   }
