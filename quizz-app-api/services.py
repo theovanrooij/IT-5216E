@@ -67,7 +67,9 @@ def deleteQuestionByID(id):
     question_json,status = getQuestionByID(id)
 
     if status == 200 :
-        return executeDeleteStatement([f"DELETE FROM Question where id = {id}"])
+        return executeDeleteStatement([f"DELETE FROM Question where id = {id}",
+            f"UPDATE Question SET position = position - 1 "
+            f"WHERE position >= {question_json['position']!r}"])
 
     return question_json,status
 
@@ -81,10 +83,20 @@ def postQuestions(question_json):
     question_json["possibleAnswers"] = input_answers
     input_question.from_json(question_json)
 
-    insert_question,status_question = executeInsertStatement([
-        f"insert into Question (position,title,text,image) values"
+    sql_request_list = []
+
+    question_by_position = getQuestionByPosition(input_question.position)
+    if question_by_position[1] == 200 :
+        sql_request_list.append(
+            f"UPDATE Question SET position = position + 1 "
+            f"WHERE position >= {input_question.position!r}")
+
+
+    sql_request_list.append(f"insert into Question (position,title,text,image) values"
         f"({input_question.position!r},{input_question.title!r},"
-        f"{input_question.text!r},{input_question.image!r})"])
+        f"{input_question.text!r},{input_question.image!r})")
+
+    insert_question,status_question = executeInsertStatement(sql_request_list)
 
     if not status_question == 200 :
         return insert_question,status_question
@@ -153,7 +165,6 @@ def updateQuestion(question_json,idQuestion):
             f"{insert_answer_string[:-1]}")
 
 
-
         return executeUpdateStatement(sql_request_list)
 
 
@@ -179,8 +190,8 @@ def selectQuestion(statement,idAnswer=False):
 
 
 def getQuestionByID(id,idAnswer=False):
-    return selectQuestion([f"SELECT Question.*, group_concat(Reponse.id||'/-/'||Reponse.text||'/-/'||Reponse.isCorrect,'|') as possibleAnswers FROM Question LEFT JOIN Reponse on Question.id = Reponse.id_question where Question.id = {id} GROUP BY Question.id"],idAnswer)
+    return selectQuestion([f"SELECT Question.*, group_concat(Reponse.id||'/-/'||Reponse.text||'/-/'||Reponse.isCorrect,'|') as possibleAnswers FROM Reponse LEFT JOIN Question on Question.id = Reponse.id_question where Question.id = {id} GROUP BY Question.id"],idAnswer)
 
 def getQuestionByPosition(position,idAnswer=False):
     return selectQuestion([f"SELECT Question.*, group_concat(Reponse.id||'/-/'||Reponse.text||'/-/'||Reponse.isCorrect,'|')"
-    f" as possibleAnswers FROM Question LEFT JOIN Reponse on Question.id = Reponse.id_question where position = {position} GROUP BY Question.id"],idAnswer)
+    f" as possibleAnswers FROM Reponse LEFT JOIN Question on Question.id = Reponse.id_question where position = {position}  GROUP BY Question.id "],idAnswer)
