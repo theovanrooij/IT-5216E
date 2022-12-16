@@ -1,16 +1,20 @@
 # Exemple de création de classe en python
 
 class Answer() :
-    def init(self,text:str,isCorrect:bool) :
+    def init(self,text:str,isCorrect:bool,id=None) :
+
         self.text = text
         self.isCorrect = isCorrect
         self.id_question = None
+        self.id=None
 
-    def to_json(self):
+    def to_json(self,idAnswer=False):
         question_json = dict()
         for key, value in self.__dict__.items():
-            if value is not None:
+            if value is not None and not key =="id" :
                 question_json[key] = value
+        if idAnswer :
+            question_json["id"] = self.id
         return question_json
 
     def from_json(self,question_json):
@@ -27,11 +31,12 @@ class Question():
         self.image = image
         self.possibleAnswers = possibleAnswers
 
-    def to_json(self):
+    def to_json(self,idAnswer=False):
         question_json = dict()
         for key, value in self.__dict__.items():
-            if value is not None:
+            if value is not None and not key == "possibleAnswers":
                 question_json[key] = value
+        question_json["possibleAnswers"] = [answer.to_json(idAnswer) for answer in self.possibleAnswers]
         return question_json
 
     def from_json(self,question_json):
