@@ -34,6 +34,11 @@ const router = createRouter({
       name: 'question-display',
       component: QuestionDisplay
     },
+    {
+      path: '/administration',
+      name: 'administration',
+      component: () => import('../views/Admin.vue')
+    },
   ]
 })
 

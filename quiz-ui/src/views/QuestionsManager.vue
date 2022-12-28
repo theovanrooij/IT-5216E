@@ -1,17 +1,16 @@
 <template>
   <div class="questions-manager">
-  <h1>Questions Manager</h1>
-  <h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1>
-  <QuestionDisplay v-bind:question="currentQuestion" @answer-selected="answerClickedHandler" />
+    <h1>Questions Manager</h1>
+    <h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1>
+    <QuestionDisplay :question="currentQuestion" @answer-selected="answerClickedHandler" />
   </div>
- </template>
+</template>
 
 
 
 <script>
 import QuestionDisplay from './QuestionDisplay.vue';
 import quizApiService from "@/services/QuizApiService";
-import participationStorageService from "@/services/ParticipationStorageService";
 
 export default {
   name: "Questions Manager",
@@ -20,7 +19,7 @@ export default {
       currentQuestion : {
       },
       currentQuestionPosition : 1,
-      totalNumberOfQuestion : 4,
+      totalNumberOfQuestion : 10,
       answersSelected : Array()
     };
   },
@@ -34,18 +33,16 @@ export default {
 
   methods: {
     async loadQuestionByposition(){
-      var questionPromise = quizApiService.getQuestion(this.currentQuestionPosition);
-      var questionApiResult = await questionPromise;
-      // console.log(questionApiResult)
+      let questionPromise = quizApiService.getQuestion(this.currentQuestionPosition);
+      let questionApiResult = await questionPromise;
       return questionApiResult.data
     },
     async answerClickedHandler(position){
 
       this.answersSelected.push(position)
-      console.log(this.answersSelected)
 
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
-        console.log("Score Final",this.score)
+        this.endQuiz()
       } else {
         this.currentQuestionPosition += 1
         this.currentQuestion = await this.loadQuestionByposition();
@@ -53,6 +50,7 @@ export default {
     },
     async endQuiz(){
       console.log("endQuiz");
+      console.log(this.answersSelected)
     },
 
   }
