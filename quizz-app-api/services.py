@@ -166,6 +166,7 @@ def updateQuestion(question_json,idQuestion):
 
 
         return executeUpdateStatement(sql_request_list)
+    return question_json,status
 
 
 def selectQuestion(statement,idAnswer=False):

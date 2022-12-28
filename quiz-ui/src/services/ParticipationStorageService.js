@@ -5,7 +5,7 @@ export default {
     savePlayerName(playerName) {
         window.localStorage.setItem("playerName", playerName);
     },
-    getPlayerName() {		
+    getPlayerName() {
         return window.localStorage.getItem("playerName");
     },
     saveParticipationScore(participationScore) {
