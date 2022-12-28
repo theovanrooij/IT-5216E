@@ -32,5 +32,8 @@ export default {
   },
   getQuestion(position) {
     return this.call("get", "questions?position="+position);
+  },
+  login(password) {
+    return this.call("post", "login",{"password":password});
   }
 };
