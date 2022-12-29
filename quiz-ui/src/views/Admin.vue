@@ -2,7 +2,7 @@
   <div >
     <h1>Administration</h1>
     <div v-if="token">
-      <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler" :forceUpdate="forceUpdateValue"/>
+      <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler"/>
       <QuestionEdit v-else-if="admin_mode === 'editQuestion'" :question="question" @update:question="updateQuestion"/>
     </div>
     <div v-else class="loginForm">
