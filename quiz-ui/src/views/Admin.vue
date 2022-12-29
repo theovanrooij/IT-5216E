@@ -2,8 +2,8 @@
   <div >
     <h1>Administration</h1>
     <div v-if="token">
-      <QuestionList v-if="admin_mode === 'list'" @question-edit="editQuestionHandler"/>
-      <!-- <QuestionList v-else-if="admin_mode === 'editQuestion'" @question-edit="editQuestionHandler"/> -->
+      <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler" :forceUpdate="forceUpdateValue"/>
+      <QuestionEdit v-else-if="admin_mode === 'editQuestion'" :question="question" @update:question="updateQuestion"/>
     </div>
     <div v-else class="loginForm">
       <p>Saisissez le mot de passe :</p>
@@ -16,6 +16,7 @@
 
 <script>
 import QuestionList from './QuestionList.vue';
+import QuestionEdit from './QuestionEdit.vue';
 import participationStorageService from "@/services/ParticipationStorageService";
 import quizApiService from "@/services/QuizApiService";
 
@@ -25,32 +26,52 @@ export default {
     return {
       password : '',
       token : null,
-      admin_mode : "list"
+      admin_mode : "list",
+      question : null,
+      question_list : Array(),
+      forceUpdateValue: false
     };
   },
   components: {
-    QuestionList
+    QuestionList,
+    QuestionEdit
   },
   async created() {
-    this.token = await participationStorageService.getToken();
 
+    this.token = participationStorageService.getToken();
+    this.updateQuestionList()
   },
   methods: {
     async loginPlayer(){
-      var loginPromise = quizApiService.login(this.password);
-	    var loginApiResult = await loginPromise;
+      let loginPromise = quizApiService.login(this.password);
+	    let loginApiResult = await loginPromise;
 
       if (loginApiResult) {
         participationStorageService.saveToken(loginApiResult.data.token)
         this.token = loginApiResult.data.token
       }
-      console.log(loginApiResult)
 
     },
-    async editQuestionHandler(questionId){
-      console.log(questionId)
+    async updateQuestionList(){
+      let question_list_local = Array()
+      for (let i = 1; i <= 1; i++) {
+        let questionPromise = quizApiService.getQuestion(i);
+        let questionApiResult = await questionPromise;
+        question_list_local.push(questionApiResult.data)
+      }
+      this.question_list = question_list_local
+    },
+    async editQuestionHandler(questionPosition){
+      let questionPromise = quizApiService.getQuestion(questionPosition);
+	    let questionApiResult = await questionPromise;
       this.admin_mode = 'editQuestion'
-    }
+      this.question=questionApiResult.data
+    },
+    async updateQuestion(new_question){
+      await quizApiService.updateQuestion(this.question.id,new_question,this.token);
+      this.updateQuestionList()
+      this.admin_mode = 'list'
+    },
   }
 };
 </script>

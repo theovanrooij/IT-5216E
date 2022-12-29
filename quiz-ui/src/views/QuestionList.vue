@@ -1,6 +1,6 @@
 <template>
   <ul>
-    <li v-for="question in questions">{{ question.text }} <span @click="$emit('question-edit', question.id)">EDIT</span></li>
+    <li v-for="question in question_list">{{ question.text }} <span @click="$emit('question-edit', question.position)">EDIT</span></li>
   </ul>
 </template>
 
@@ -15,18 +15,10 @@ export default {
     };
   },
   props: {
-    question: {
+    question_list: {
       type: Object
     },
     emits: ["question-edit"]
-  },
-  async created() {
-
-    for (var i = 1; i <= 10; i++) {
-      let questionPromise = quizApiService.getQuestion(i);
-      let questionApiResult = await questionPromise;
-      this.questions.push(questionApiResult.data)
-    }
   }
 };
 </script>

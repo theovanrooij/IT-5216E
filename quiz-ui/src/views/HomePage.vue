@@ -23,8 +23,8 @@ export default {
   },
   async created() {
 		console.log("Composant Home page 'created'");
-	  var quizInfoPromise = quizApiService.getQuizInfo();
-	  var quizInfoApiResult = await quizInfoPromise;
+	  let quizInfoPromise = quizApiService.getQuizInfo();
+	  let quizInfoApiResult = await quizInfoPromise;
     this.registeredScores = quizInfoApiResult.data.scores;
   }
 };

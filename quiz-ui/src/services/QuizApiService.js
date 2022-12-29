@@ -7,7 +7,7 @@ const instance = axios.create({
 
 export default {
   async call(method, resource, data = null, token = null) {
-    var headers = {
+    let headers = {
       "Content-Type": "application/json",
     };
     if (token != null) {
@@ -35,5 +35,9 @@ export default {
   },
   login(password) {
     return this.call("post", "login",{"password":password});
+  },
+  updateQuestion(questionID,question,token) {
+    return this.call("put", "questions/"+questionID,question,token);
   }
+
 };
