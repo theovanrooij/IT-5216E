@@ -205,9 +205,9 @@ def getQuizInfo():
         return {"size":question_number.fetchone()[0],"scores":[]},200
     return question_number,status
 
-def postParticipations(player_name,answers):
-
-    score_max = getQuizInfo()[0]
+def postParticipations(participation_json):
+    print(participation_json)
+    return "",400
     answersSummaries = []
     score = 0
     for i in range(score_max) :

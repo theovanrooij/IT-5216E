@@ -19,7 +19,7 @@ export default {
       currentQuestion : {
       },
       currentQuestionPosition : 1,
-      totalNumberOfQuestion : 10,
+      totalNumberOfQuestion : null,
       answersSelected : Array()
     };
   },
@@ -28,7 +28,9 @@ export default {
   },
   async created() {
     this.currentQuestion = await this.loadQuestionByposition();
-
+    let quizInfoPromise = quizApiService.getQuizInfo();
+    let quizInfoApiResult = await quizInfoPromise;
+    this.totalNumberOfQuestion = quizInfoApiResult.data.size
   },
 
   methods: {

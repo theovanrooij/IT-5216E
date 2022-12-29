@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import participationStorageService from "@/services/ParticipationStorageService";
+
 const instance = axios.create({
 	baseURL: `${import.meta.env.VITE_API_URL}`,
   json: true
@@ -25,6 +27,9 @@ export default {
       })
       .catch((error) => {
         console.error(error);
+        if (error.response.status == 401) {
+          participationStorageService.saveToken('')
+        }
       });
   },
   getQuizInfo() {
@@ -38,6 +43,9 @@ export default {
   },
   updateQuestion(questionID,question,token) {
     return this.call("put", "questions/"+questionID,question,token);
+  },
+  postQuestion(question,token) {
+    return this.call("post", "questions",question,token);
   }
 
 };

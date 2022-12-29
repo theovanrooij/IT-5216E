@@ -3,19 +3,19 @@
     <div class="row g-2 d-flex flex-wrap flex-column">
       <div class="col-md">
         <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInputGrid" v-model="question.title">
+          <input type="text" class="form-control" id="floatingInputGrid" placeholder="Title" v-model="question.title">
           <label for="floatingInputGrid">Question Title</label>
         </div>
       </div>
       <div class="col-md">
         <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInputGrid" v-model="question.text">
+          <input type="text" class="form-control" id="floatingInputGrid" placeholder="Text" v-model="question.text">
           <label for="floatingInputGrid">Question Text</label>
         </div>
       </div>
       <div class="col-md">
         <div class="form-floating">
-          <input type="number" class="form-control" id="floatingInputGrid" v-model="question.position">
+          <input type="number" class="form-control" id="floatingInputGrid" placeholder="Position" v-model="question.position">
           <label for="floatingInputGrid">Question number</label>
         </div>
       </div>
@@ -119,19 +119,34 @@ export default {
   },
   data() {
     return {
-      firstAnswer: '',
-      secondAnswer:'',
-      thirdAnswer: '',
-      fourthAnswer:''
+      firstAnswer : {
+        text : null,
+        isCorrect: null
+      },
+      secondAnswer :{
+        text : null,
+        isCorrect: null
+      },
+      thirdAnswer : {
+        text : null,
+        isCorrect: null
+      },
+      fourthAnswer :{
+        text : null,
+        isCorrect: null
+      },
     }
   },
   mounted() {
     // Destructure the first element from the names prop
-    const [firstAnswer,secondAnswer,thirdAnswer,fourthAnswer] = this.question.possibleAnswers;
-    this.firstAnswer = firstAnswer;
-    this.secondAnswer = secondAnswer;
-    this.thirdAnswer = thirdAnswer;
-    this.fourthAnswer = fourthAnswer;
+    if (this.question.possibleAnswers) {
+      const [firstAnswer,secondAnswer,thirdAnswer,fourthAnswer] = this.question.possibleAnswers;
+      this.firstAnswer = firstAnswer ? firstAnswer : {text:null, isCorrect:null}
+      this.secondAnswer = secondAnswer ? firstAnswer : {text:null, isCorrect:null}
+      this.thirdAnswer = thirdAnswer ? firstAnswer : {text:null, isCorrect:null}
+      this.fourthAnswer = fourthAnswer ? firstAnswer : {text:null, isCorrect:null}
+    }
+
   },
   emits: ["update:question"],
   methods: {

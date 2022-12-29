@@ -92,5 +92,12 @@ def getQuestionByPosition():
         return services.getQuestionByPosition(position)
     return {"message" : "Veuillez préciser une position"}, 404
 
+@app.route('/participations', methods=['POST'])
+def postParticipations():
+
+    #récupèrer un l'objet json envoyé dans le body de la requète
+    participation_json = request.get_json()
+    return services.postParticipations(participation_json)
+
 if __name__ == "__main__":
     app.run()
