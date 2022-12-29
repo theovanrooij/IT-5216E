@@ -196,3 +196,22 @@ def getQuestionByID(id,idAnswer=False):
 def getQuestionByPosition(position,idAnswer=False):
     return selectQuestion([f"SELECT Question.*, group_concat(Reponse.id||'/-/'||Reponse.text||'/-/'||Reponse.isCorrect,'|')"
     f" as possibleAnswers FROM Reponse LEFT JOIN Question on Question.id = Reponse.id_question where position = {position}  GROUP BY Question.id "],idAnswer)
+
+def getQuizInfo():
+    return executeSelectStatement([f"SELECT COUNT(*) FROM Question"]),[]
+
+def postParticipations(player_name,answers):
+    
+    score_max = getQuizInfo()[0]
+    answersSummaries = []
+    score = 0
+    for i in range(score_max) : 
+        info_quest = getQuestionByPosition(i+1)["possibleAnswers"]
+        for i in info_quest : 
+            if info_quest[i]['isCorrect'] == True : correctAnswerPosition = i+1
+        wasCorrect = 'true' if answers[i] == correctAnswerPosition else 'false'
+        if wasCorrect == 'true' : score+=1
+        answersSummaries += [correctAnswerPosition, wasCorrect]
+
+    status_code = 200
+    return answersSummaries, player_name, score, status_code
