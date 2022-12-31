@@ -1,4 +1,5 @@
 from models import Question,Answer
+from datetime import datetime
 import sqlite3
 
 
@@ -59,6 +60,38 @@ def executeDeleteStatement(statement_list):
         return {},204
     else :
         return response, status_code
+
+def rebuildDB():
+    rebuildRequest,rebuildStatus = executeStatement([
+            """CREATE TABLE "Question" (
+        "id"	INTEGER NOT NULL,
+        "position"	INTEGER NOT NULL,
+        "title"	TEXT NOT NULL,
+        "text"	TEXT NOT NULL,
+        "image"	TEXT,
+        PRIMARY KEY("id")
+    );
+    ""","""CREATE TABLE "Reponse" (
+        "id"    INTEGER UNIQUE,
+        "id_question"    INTEGER,
+        "text"    TEXT,
+        "isCorrect"    INTEGER,
+        PRIMARY KEY("id"),
+        FOREIGN KEY("id_question") REFERENCES "Question"("id")
+    )""","""CREATE TABLE "Participation" (
+        "id"    INTEGER,
+        "playerName"    TEXT NOT NULL,
+        "score"    INTEGER NOT NULL,
+        "date" TEXT NOT NULL,
+        PRIMARY KEY("id")
+    );
+    """
+        ])
+    print(rebuildRequest)
+    if not rebuildStatus == 200 :
+        return rebuildRequest,rebuildStatus
+    rebuildRequest.execute("commit")
+    return "Ok",200
 
 def deleteAllQuestions():
     return executeDeleteStatement(["DELETE FROM Reponse","DELETE FROM Question"])
@@ -200,10 +233,20 @@ def getQuestionByPosition(position,idAnswer=False):
 def getQuizInfo():
     question_number,status = executeSelectStatement([f"SELECT COUNT(*) FROM Question"])
 
-    if status == 200 :
+    if not status == 200 :
+        return question_number,status
 
-        return {"size":question_number.fetchone()[0],"scores":[]},200
-    return question_number,status
+    participationRequest,participationStatus = executeSelectStatement([f"SELECT playerName,score,date FROM Participation ORDER BY score DESC"])
+    if not participationStatus == 200 :
+        return participationRequest,participationStatus
+    list_participation = []
+    for participation in participationRequest :
+        list_participation.append({"playerName":participation[0],"score":participation[1],"date":participation[2]})
+
+
+    return {"size":question_number.fetchone()[0],"scores":list_participation},200
+
+
 
 def postParticipations(participation_json):
     quizInfoApiResult =getQuizInfo()
@@ -235,8 +278,19 @@ def postParticipations(participation_json):
                     isCorrect = True
                 answersSummaries.append((j+1,isCorrect))
 
-    return {
+    playerName = participation_json.get("playerName")
+    print(f"INSERT INTO Participation (playerName,score,date) values ('{playerName}', '{score}', '{datetime.now().strftime('%d/%m/%y %H:%M:%S')}'")
+    insert_answers,status_answers = executeInsertStatement([f"INSERT INTO Participation (playerName,score,date) values ('{playerName}', '{score}', '{datetime.now().strftime('%d/%m/%y %H:%M:%S')}')"])
+
+    if status_answers == 200 :
+        return {
         "answersSummaries":answersSummaries,
         "score":score,
-        "playerName":participation_json.get("playerName")
+        "playerName":playerName
     },200
+
+    return insert_answers,status_answers
+
+def deleteAllParticipations():
+    return executeDeleteStatement(["DELETE FROM Participation"])
+
