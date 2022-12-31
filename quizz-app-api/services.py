@@ -206,17 +206,37 @@ def getQuizInfo():
     return question_number,status
 
 def postParticipations(participation_json):
-    print(participation_json)
-    return "",400
+    quizInfoApiResult =getQuizInfo()
+    if quizInfoApiResult[1] != 200 :
+        return {"error":"Problème de récupération des informations du quiz"},500
+
+    nombre_questions = quizInfoApiResult[0]["size"]
+
+    if len(participation_json["answers"]) < nombre_questions :
+        return {"error":"Le nombre des réponses est inférieur au nombre de questions"},400
+    elif len(participation_json["answers"]) > nombre_questions :
+        return {"error":"Le nombre des réponses est supérieur au nombre de questions"},400
+
     answersSummaries = []
     score = 0
-    for i in range(score_max) :
-        info_quest = getQuestionByPosition(i+1)["possibleAnswers"]
-        for i in info_quest :
-            if info_quest[i]['isCorrect'] == True : correctAnswerPosition = i+1
-        wasCorrect = 'true' if answers[i] == correctAnswerPosition else 'false'
-        if wasCorrect == 'true' : score+=1
-        answersSummaries += [correctAnswerPosition, wasCorrect]
+    for i,reponse_submit in enumerate(participation_json["answers"]) :
 
-    status_code = 200
-    return answersSummaries, player_name, score, status_code
+        info_question = getQuestionByPosition(i+1)
+        if info_question[1]!= 200 :
+            return {"error":"Erreur dans la récupération des questions"},500
+
+        possibleAnswers = info_question[0]["possibleAnswers"]
+
+        for j,reponse in enumerate(possibleAnswers) :
+            if reponse['isCorrect'] == True :
+                isCorrect = False
+                if j+1 == int(reponse_submit) :
+                    score+=1
+                    isCorrect = True
+                answersSummaries.append((j+1,isCorrect))
+
+    return {
+        "answersSummaries":answersSummaries,
+        "score":score,
+        "playerName":participation_json.get("playerName")
+    },200
