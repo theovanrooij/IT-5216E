@@ -1,12 +1,34 @@
 <template>
-  <h1>Home page</h1>
+  <h1>Page d'accueil</h1>
+  <p>Bienvenue sur notre Quiz. <br> Vous avez à votre disposition {{ numberQuestion }} questions sur le thème des drapeaux de Pays. <br>
+     Vous disposez d'un temps illimité pour répondre aux questions. <br>
+     Pour chaque question, une seule réponse est correcte. Une bonne réponse rapporte 1 point. Une mauvaise réponse ne fait pas perdre de points.</p>
+  <table class="table text-reset table-sm caption-top" style="overflow: hidden;">
+    <caption>Classement des participations</caption>
+    <thead>
+      <td>Position</td>
+      <td>Username</td>
+      <td>Score</td>
+      <td>Date</td>
+    </thead>
+    <tbody>
+      <tr v-for="(scoreEntry,index) in registeredScores">
+        <td>{{ index }}</td>
+        <td>{{ scoreEntry.playerName }} </td>
+        <td>{{ scoreEntry.score }}</td>
+        <td>{{ scoreEntry.date }}</td>
+      </tr>
+    </tbody>
+  </table>
 
-  <div v-for="scoreEntry in registeredScores" v-bind:key="scoreEntry.date">
-    {{ scoreEntry.playerName }} - {{ scoreEntry.score }}
-  </div>
-  <router-link to="/start-new-quiz-page">Démarrer le quiz !</router-link>
+
 </template>
-
+ <style>
+    body {
+      min-height: 100vh;
+      height: auto;
+    }
+  </style>
 <script>
 // {/* <style> <p> Test </p></style> */}
 import quizApiService from "@/services/QuizApiService";
@@ -15,7 +37,9 @@ export default {
   name: "HomePage",
   data() {
     return {
-      registeredScores : []
+      registeredScores : [],
+      numberQuestion : 0
+
     };
   },
   components: {
@@ -26,6 +50,7 @@ export default {
 	  let quizInfoPromise = quizApiService.getQuizInfo();
 	  let quizInfoApiResult = await quizInfoPromise;
     this.registeredScores = quizInfoApiResult.data.scores;
+    this.numberQuestion = quizInfoApiResult.data.size;
   }
 };
 </script>

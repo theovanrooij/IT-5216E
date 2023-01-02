@@ -1,6 +1,5 @@
 <template>
-  <div class="questions-manager">
-    <h1>Questions Manager</h1>
+  <div class="questions-manager my-3">
     <h1>Question {{ currentQuestionPosition }} / {{ totalNumberOfQuestion }}</h1>
     <QuestionDisplay :question="currentQuestion" @answer-selected="answerClickedHandler" />
   </div>
@@ -11,6 +10,7 @@
 <script>
 import QuestionDisplay from './QuestionDisplay.vue';
 import quizApiService from "@/services/QuizApiService";
+import participationStorageService from "@/services/ParticipationStorageService";
 
 export default {
   name: "Questions Manager",
@@ -53,6 +53,12 @@ export default {
     async endQuiz(){
       console.log("endQuiz");
       console.log(this.answersSelected)
+      let quizSubmitPromise = quizApiService.submitQuiz({
+        "playerName": participationStorageService.getPlayerName(),
+        "answers" : this.answersSelected
+      });
+      let quizSubmitApiResult = await quizSubmitPromise
+      this.$router.push('/');
     },
 
   }

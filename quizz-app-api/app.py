@@ -97,6 +97,7 @@ def postParticipations():
 
     #récupèrer un l'objet json envoyé dans le body de la requète
     participation_json = request.get_json()
+    print(participation_json)
     return services.postParticipations(participation_json)
 
 @app.route('/participations/all', methods=['DELETE'])

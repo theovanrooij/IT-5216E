@@ -1,13 +1,16 @@
 <template>
-  <div class="new-quiz-page">
-    <h1>New Quiz Page</h1>
 
-    <p> <br><br><br><br><br><br><br><br><br><br><br><br>Saisissez votre nom :<br>
-    <input type="text" v-model="username" id="name" name="name" size="10">
-    <button class="btn btn-success" type="button" @click="launchNewQuiz"> GO!</button>
-    <p>{{ playerName }}</p>
-  </p>
-  </div>
+    <div class="mx-auto my-auto">
+      <div class="d-flex flex-column h-100 align-items-center">
+        <h1>Nouveau Quiz</h1>
+        <p> Saisissez votre nom :<br></p>
+        <div class="row justify-content-md-center">
+          <input class="m-1 col" type="text" v-model="username" id="name" name="name" size="10">
+          <button class="m-1 btn btn-success col-md-auto" type="button" @click="launchNewQuiz"> GO!</button>
+
+        </div>
+      </div>
+    </div>
 </template>
 
 <style>

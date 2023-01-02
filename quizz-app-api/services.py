@@ -149,6 +149,7 @@ def postQuestions(question_json):
 
 
 def updateQuestion(question_json,idQuestion):
+    print(question_json)
     idQuestion = int(idQuestion)
     input_question = Question()
 
@@ -273,10 +274,10 @@ def postParticipations(participation_json):
         for j,reponse in enumerate(possibleAnswers) :
             if reponse['isCorrect'] == True :
                 isCorrect = False
-                if j+1 == int(reponse_submit) :
+                if j == int(reponse_submit) :
                     score+=1
                     isCorrect = True
-                answersSummaries.append((j+1,isCorrect))
+                answersSummaries.append((j,isCorrect))
 
     playerName = participation_json.get("playerName")
     print(f"INSERT INTO Participation (playerName,score,date) values ('{playerName}', '{score}', '{datetime.now().strftime('%d/%m/%y %H:%M:%S')}'")

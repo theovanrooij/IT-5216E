@@ -1,6 +1,7 @@
 <template>
   <ul>
-    <li v-for="question in question_list">{{ question.text }} <span @click="$emit('question-edit', question.position)">EDIT</span></li>
+    <li v-for="question in question_list">{{ question.text }} <span @click="$emit('question-edit', question.position)">EDIT </span><span @click="$emit('question-delete', question.position)"> DELETE</span></li>
+
   </ul>
 </template>
 

@@ -3,11 +3,40 @@
     <h1>Administration</h1>
     <div v-if="token">
       <div class="addQuestion" @click="addQuestionHandler">
-        ADD
+        ADD QUESTION
       </div>
-      <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler"/>
+      <div class="deleteAllQuestions" @click="deleteAllQuestions">
+        DELETE ALL QUESTIONS
+      </div>
+      <div class="deleteAllParticipations" @click="deleteAllParticipations">
+        DELETE ALL PARTICIPATIONS
+      </div>
+      <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler" @question-delete="deleteQuestionById"/>
       <QuestionEdit v-else-if="admin_mode === 'editQuestion'" :question="question" @update:question="updateQuestion"/>
       <QuestionEdit v-else-if="admin_mode === 'newQuestion'" :question="emptyQuestion" @update:question="postQuestion"/>
+
+      <table class="table text-reset table-sm caption-top" style="overflow: hidden;">
+      <caption>Gestionnaire des questions</caption>
+      <thead>
+        <td>Position</td>
+        <td>Questions</td>
+        <td>EDIT</td>
+        <td>DELETE</td>
+      </thead>
+      <tbody>
+        <tr v-for="(scoreEntry,index) in registeredScores">
+          <td>{{ index }}</td>
+          <td>{{ scoreEntry.playerName }} </td>
+          <td>{{ scoreEntry.score }}</td>
+          <td>{{ scoreEntry.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
 
     </div>
     <div v-else class="loginForm">
@@ -67,6 +96,26 @@ export default {
     addQuestionHandler(){
       this.admin_mode = 'newQuestion'
     },
+    async deleteAllQuestions(){
+      // TODO: Gérer les erreurs
+      await quizApiService.deleteAllQuestions(this.token)
+      this.token = participationStorageService.getToken()
+      this.updateQuestionList()
+      this.admin_mode = 'list'
+    },
+    async deleteQuestionById(questionPosition){
+      // TODO: Gérer les erreurs
+      let questionPromise = quizApiService.getQuestion(questionPosition);
+	    let questionApiResult = await questionPromise;
+      console.log(questionApiResult)
+      await quizApiService.deleteQuestionById(questionApiResult.data.id,this.token)
+      this.updateQuestionList()
+    },
+    async deleteAllParticipations(){
+      // TODO: Gérer les erreurs
+      await quizApiService.deleteAllParticipations(this.token)
+      this.token = participationStorageService.getToken()
+    },
     async updateQuestionList(){
 
       this.question_list = Array()
@@ -90,13 +139,12 @@ export default {
       this.question=questionApiResult.data
     },
     async updateQuestion(new_question){
-
+      // TODO: Gérer les erreurs
       await quizApiService.updateQuestion(this.question.id,new_question,this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList()
       this.admin_mode = 'list'
 
-      console.log(this.token == null)
     },
     async postQuestion(new_question){
       console.log(new_question)

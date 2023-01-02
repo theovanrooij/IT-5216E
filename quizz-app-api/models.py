@@ -20,6 +20,7 @@ class Answer() :
     def from_json(self,question_json):
         for k,v in question_json.items() :
             setattr(self,k,v)
+        
 
 class Question():
 

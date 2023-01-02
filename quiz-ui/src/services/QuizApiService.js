@@ -46,6 +46,18 @@ export default {
   },
   postQuestion(question,token) {
     return this.call("post", "questions",question,token);
+  },
+  deleteAllQuestions(token) {
+    return this.call("delete", "questions/all",null,token);
+  },
+  deleteQuestionById(idQuestion,token) {
+    return this.call("delete", "questions/"+idQuestion,null,token);
+  },
+  deleteAllParticipations(token) {
+    return this.call("delete", "participations/all",null,token);
+  },
+  submitQuiz(quizSubmission){
+    return this.call("post", "participations",quizSubmission);
   }
 
 };

@@ -6,20 +6,23 @@ import { RouterLink, RouterView } from 'vue-router'
   <header>
 
     <div class="wrapper">
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/new-quiz-page">NewQuizPage</RouterLink>
-        <RouterLink to="/administration">Administration</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+      <nav class="navbar sticky-top bg-body-tertiary w-60">
+        <div class="container-fluid">
+          <RouterLink to="/">Home</RouterLink>
+          <RouterLink to="/new-quiz-page">Démarrer le Quiz !</RouterLink>
+          <RouterLink to="/administration">Administration</RouterLink>
+          <RouterLink to="/about">About</RouterLink>
+        </div>
       </nav>
+
     </div>
   </header>
-
+  <div class="d-flex flex-column h-100 w-100 align-items-center">
   <RouterView />
+  </div>
 </template>
 
-<style scoped>
+<!-- <style scoped>
 header {
   line-height: 1.5;
   max-height: 100vh;
@@ -81,4 +84,4 @@ nav a:first-of-type {
     margin-top: 1rem;
   }
 }
-</style>
+</style> -->
