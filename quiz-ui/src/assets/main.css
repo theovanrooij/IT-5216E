@@ -23,14 +23,12 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
     width: 100vw;
     height: 90vh;
   }
   #app {
     width: 100%;
-    height: 90%;
-    
+    height: 95%;
+
   }
 }

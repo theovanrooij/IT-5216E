@@ -3,7 +3,7 @@
   <p>Bienvenue sur notre Quiz. <br> Vous avez à votre disposition {{ numberQuestion }} questions sur le thème des drapeaux de Pays. <br>
      Vous disposez d'un temps illimité pour répondre aux questions. <br>
      Pour chaque question, une seule réponse est correcte. Une bonne réponse rapporte 1 point. Une mauvaise réponse ne fait pas perdre de points.</p>
-  <table class="table text-reset table-sm caption-top" style="overflow: hidden;">
+  <table class="table text-reset table-sm caption-top">
     <caption>Classement des participations</caption>
     <thead>
       <td>Position</td>
@@ -21,14 +21,8 @@
     </tbody>
   </table>
 
-
 </template>
- <style>
-    body {
-      min-height: 100vh;
-      height: auto;
-    }
-  </style>
+
 <script>
 // {/* <style> <p> Test </p></style> */}
 import quizApiService from "@/services/QuizApiService";
@@ -54,3 +48,10 @@ export default {
   }
 };
 </script>
+
+<style>
+  body  {
+    min-height: 100vh;
+    height: auto!important;
+  }
+</style>
