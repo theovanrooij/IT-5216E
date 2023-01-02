@@ -24,7 +24,7 @@ for i in range(nb_questions) :
 str("""  
 {\n\t"text": "Quel est le pays associé à ce drapeau ?",""")
     +str("""\n\t"title": " """) + str(""" Voici un joli pays numéro """+str(i+1)+str(""" ", """)
-    +str("""\n\t"image": " """) + str(image_vrai_pays)+ str(""" ", """)
+    +str("""\n\t"image": "data:image/jpeg;base64,""") + str(image_vrai_pays)+ str(""" ", """)
     +str("""\n\t"position": """)+str(i+1)+str(""",""")
     +str("""\n\t"possibleAnswers": [""")
     +str("""\n\t\t{\n\t\t\t"text": " """)+str(question_random[0])+str("""",\n\t\t\t"isCorrect": """)+str(question_random[0]==vrai_pays).lower()+str("""\n\t\t},""")
