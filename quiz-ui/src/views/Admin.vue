@@ -78,22 +78,18 @@ export default {
       this.admin_mode = 'newQuestion'
     },
     async deleteAllQuestions(){
-      // TODO: Gérer les erreurs
       await quizApiService.deleteAllQuestions(this.token)
       this.token = participationStorageService.getToken()
       this.updateQuestionList()
       this.admin_mode = 'list'
     },
     async deleteQuestionById(questionPosition){
-      // TODO: Gérer les erreurs
       let questionPromise = quizApiService.getQuestion(questionPosition);
 	    let questionApiResult = await questionPromise;
-      console.log(questionApiResult)
       await quizApiService.deleteQuestionById(questionApiResult.data.id,this.token)
       this.updateQuestionList()
     },
     async deleteAllParticipations(){
-      // TODO: Gérer les erreurs
       await quizApiService.deleteAllParticipations(this.token)
       this.token = participationStorageService.getToken()
     },
@@ -120,7 +116,6 @@ export default {
       this.question=questionApiResult.data
     },
     async updateQuestion(new_question){
-      // TODO: Gérer les erreurs
       await quizApiService.updateQuestion(this.question.id,new_question,this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList()

@@ -27,16 +27,29 @@ export default {
     QuestionDisplay
   },
   async created() {
-    this.currentQuestion = await this.loadQuestionByposition();
     let quizInfoPromise = quizApiService.getQuizInfo();
     let quizInfoApiResult = await quizInfoPromise;
     this.totalNumberOfQuestion = quizInfoApiResult.data.size
+
+    if (this.totalNumberOfQuestion === 0) {
+      // this.$router.push("/new-quiz-page")
+    }
+
+    this.currentQuestion = await this.loadQuestionByposition();
+
+
+
   },
 
   methods: {
     async loadQuestionByposition(){
       let questionPromise = quizApiService.getQuestion(this.currentQuestionPosition);
       let questionApiResult = await questionPromise;
+
+      if (!questionApiResult) {
+        this.$router.push("/new-quiz-page?error=questionUndefined")
+      }
+
       return questionApiResult.data
     },
     async answerClickedHandler(position){

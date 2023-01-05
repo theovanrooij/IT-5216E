@@ -3,9 +3,9 @@
   <p>Bienvenue sur notre Quiz. <br> Vous avez à votre disposition {{ numberQuestion }} questions sur le thème des drapeaux de Pays. <br>
      Vous disposez d'un temps illimité pour répondre aux questions. <br>
      Pour chaque question, une seule réponse est correcte. Une bonne réponse rapporte 1 point. Une mauvaise réponse ne fait pas perdre de points.</p>
-  <table class="table text-reset table-sm caption-top">
+  <table class="table text-reset table-sm caption-top" v-if="registeredScores.length">
     <caption>Classement des participations</caption>
-    <thead>
+    <thead >
       <td>Position</td>
       <td>Username</td>
       <td>Score</td>
@@ -19,6 +19,11 @@
         <td>{{ scoreEntry.date }}</td>
       </tr>
     </tbody>
+  </table>
+
+  <table class="table text-reset table-sm caption-top" v-else>
+    <caption>Il n'y a aucune participation pour le moment.</caption>
+
   </table>
 
 </template>

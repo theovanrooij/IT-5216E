@@ -1,7 +1,8 @@
 <template>
   <table class="table text-reset table-sm caption-top" style="overflow: hidden;">
       <caption>Gestionnaire des questions</caption>
-      <thead>
+      <caption v-if="question_list.length==0">Il n'y a aucune question de renseignée.</caption>
+      <thead v-else>
         <td>Position</td>
         <td>Question</td>
         <td class="text-center">EDIT</td>
