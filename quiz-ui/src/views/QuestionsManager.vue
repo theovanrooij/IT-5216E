@@ -41,7 +41,8 @@ export default {
     },
     async answerClickedHandler(position){
 
-      this.answersSelected.push(position)
+      // Pour suivre la convention des test Postman
+      this.answersSelected.push(position+1)
 
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
         this.endQuiz()
@@ -51,8 +52,6 @@ export default {
       }
     },
     async endQuiz(){
-      console.log("endQuiz");
-      console.log(this.answersSelected)
       let quizSubmitPromise = quizApiService.submitQuiz({
         "playerName": participationStorageService.getPlayerName(),
         "answers" : this.answersSelected
