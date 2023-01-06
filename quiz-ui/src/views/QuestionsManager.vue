@@ -27,21 +27,35 @@ export default {
     QuestionDisplay
   },
   async created() {
-    this.currentQuestion = await this.loadQuestionByposition();
     let quizInfoPromise = quizApiService.getQuizInfo();
     let quizInfoApiResult = await quizInfoPromise;
     this.totalNumberOfQuestion = quizInfoApiResult.data.size
+
+    if (this.totalNumberOfQuestion === 0) {
+      // this.$router.push("/new-quiz-page")
+    }
+
+    this.currentQuestion = await this.loadQuestionByposition();
+
+
+
   },
 
   methods: {
     async loadQuestionByposition(){
       let questionPromise = quizApiService.getQuestion(this.currentQuestionPosition);
       let questionApiResult = await questionPromise;
+
+      if (!questionApiResult) {
+        this.$router.push("/new-quiz-page?error=questionUndefined")
+      }
+
       return questionApiResult.data
     },
     async answerClickedHandler(position){
 
-      this.answersSelected.push(position)
+      // Pour suivre la convention des test Postman
+      this.answersSelected.push(position+1)
 
       if (this.currentQuestionPosition == this.totalNumberOfQuestion) {
         this.endQuiz()
@@ -51,8 +65,6 @@ export default {
       }
     },
     async endQuiz(){
-      console.log("endQuiz");
-      console.log(this.answersSelected)
       let quizSubmitPromise = quizApiService.submitQuiz({
         "playerName": participationStorageService.getPlayerName(),
         "answers" : this.answersSelected

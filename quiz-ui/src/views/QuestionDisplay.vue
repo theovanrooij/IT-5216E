@@ -11,9 +11,8 @@
   </div>
 </template>
 
+
 <script>
-
-
 export default {
   name: "QuestionDisplay",
   props: {
