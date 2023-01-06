@@ -8,34 +8,34 @@ import { RouterLink } from 'vue-router'
   <p>Vous avez à votre disposition {{ numberQuestion }} questions sur le thème des drapeaux de Pays. <br>
      Vous disposez d'un temps illimité pour répondre aux questions. <br>
      Pour chaque question, une seule réponse est correcte. Une bonne réponse rapporte 1 point. Une mauvaise réponse ne fait pas perdre de points.</p>
-     <RouterLink to="/new-quiz-page"><button type="button" class="btn btn-primary btn-lg btn-block my-3 ">Jouer</button></RouterLink>
-
-  <caption>Podium</caption>
-  <div id="podium">
-    <span class="podium_name">{{ registeredScores[1].playerName }}</span>
-    <span class="podium_name">{{ registeredScores[0].playerName }}</span>
-    <span class="podium_name">{{ registeredScores[2].playerName }}</span>
+  <RouterLink to="/new-quiz-page"><button type="button" class="btn btn-primary btn-lg btn-block my-3 ">Jouer</button></RouterLink>
+  <div class="rankings" v-if="registeredScores.length">
+    <caption>Podium</caption>
+    <div id="podium" >
+      <span class="podium_name" v-if="registeredScores.length > 1">{{ registeredScores[1].playerName }}</span> <span v-else></span>
+      <span class="podium_name" v-if="registeredScores.length > 0">{{ registeredScores[0].playerName }}</span> <span v-else></span>
+      <span class="podium_name" v-if="registeredScores.length > 2">{{ registeredScores[2].playerName }}</span> <span v-else></span>
+    </div>
+    <table class="table text-reset table-sm caption-top table-striped table-hover text-center" >
+      <caption class="text-center">Classement des participations</caption>
+      <thead>
+        <tr>
+          <th>Position</th>
+          <th>Username</th>
+          <th>Score</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(scoreEntry,index) in registeredScores">
+          <td>{{ index }}</td>
+          <td>{{ scoreEntry.playerName }} </td>
+          <td>{{ scoreEntry.score }}</td>
+          <td>{{ scoreEntry.date }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <table class="table text-reset table-sm caption-top table-striped table-hover text-center" v-if="registeredScores.length">
-    <caption class="text-center">Classement des participations</caption>
-    <thead>
-      <tr>
-        <th>Position</th>
-        <th>Username</th>
-        <th>Score</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(scoreEntry,index) in registeredScores">
-        <td>{{ index }}</td>
-        <td>{{ scoreEntry.playerName }} </td>
-        <td>{{ scoreEntry.score }}</td>
-        <td>{{ scoreEntry.date }}</td>
-      </tr>
-    </tbody>
-  </table>
-
   <table class="table text-reset table-sm caption-top" v-else>
     <caption>Il n'y a aucune participation pour le moment.</caption>
 
