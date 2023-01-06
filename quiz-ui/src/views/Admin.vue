@@ -1,24 +1,42 @@
 <template>
+  <div >
     <h1>Administration</h1>
-    <div v-if="token" class="w-100">
-      <div class="btn_container d-flex justify-content-between">
-        <div class="addQuestion btn btn-success" @click="addQuestionHandler">
-          ADD QUESTION
-        </div>
-        <div class="btn_delete_container">
-          <div class="deleteAllQuestions btn btn-danger mx-3" @click="deleteAllQuestions">
-            DELETE ALL QUESTIONS
-          </div>
-          <div class="deleteAllParticipations btn btn-danger" @click="deleteAllParticipations">
-            DELETE ALL PARTICIPATIONS
-          </div>
-        </div>
-
+    <div v-if="token">
+      <div class="addQuestion" @click="addQuestionHandler">
+        ADD QUESTION
       </div>
-
+      <div class="deleteAllQuestions" @click="deleteAllQuestions">
+        DELETE ALL QUESTIONS
+      </div>
+      <div class="deleteAllParticipations" @click="deleteAllParticipations">
+        DELETE ALL PARTICIPATIONS
+      </div>
       <QuestionList v-if="admin_mode === 'list'" :question_list="question_list" @question-edit="editQuestionHandler" @question-delete="deleteQuestionById"/>
       <QuestionEdit v-else-if="admin_mode === 'editQuestion'" :question="question" @update:question="updateQuestion"/>
       <QuestionEdit v-else-if="admin_mode === 'newQuestion'" :question="emptyQuestion" @update:question="postQuestion"/>
+
+      <table class="table text-reset table-sm caption-top" style="overflow: hidden;">
+      <caption>Gestionnaire des questions</caption>
+      <thead>
+        <td>Position</td>
+        <td>Questions</td>
+        <td>EDIT</td>
+        <td>DELETE</td>
+      </thead>
+      <tbody>
+        <tr v-for="(scoreEntry,index) in registeredScores">
+          <td>{{ index }}</td>
+          <td>{{ scoreEntry.playerName }} </td>
+          <td>{{ scoreEntry.score }}</td>
+          <td>{{ scoreEntry.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+
+
+
 
     </div>
     <div v-else class="loginForm">
@@ -27,6 +45,7 @@
       <button class="btn btn-success" type="button" @click="loginPlayer">Connexion</button>
     </div>
 
+  </div>
 </template>
 
 <script>
@@ -78,18 +97,22 @@ export default {
       this.admin_mode = 'newQuestion'
     },
     async deleteAllQuestions(){
+      // TODO: Gérer les erreurs
       await quizApiService.deleteAllQuestions(this.token)
       this.token = participationStorageService.getToken()
       this.updateQuestionList()
       this.admin_mode = 'list'
     },
     async deleteQuestionById(questionPosition){
+      // TODO: Gérer les erreurs
       let questionPromise = quizApiService.getQuestion(questionPosition);
 	    let questionApiResult = await questionPromise;
+      console.log(questionApiResult)
       await quizApiService.deleteQuestionById(questionApiResult.data.id,this.token)
       this.updateQuestionList()
     },
     async deleteAllParticipations(){
+      // TODO: Gérer les erreurs
       await quizApiService.deleteAllParticipations(this.token)
       this.token = participationStorageService.getToken()
     },
@@ -116,6 +139,7 @@ export default {
       this.question=questionApiResult.data
     },
     async updateQuestion(new_question){
+      // TODO: Gérer les erreurs
       await quizApiService.updateQuestion(this.question.id,new_question,this.token);
       this.token = participationStorageService.getToken();
       this.updateQuestionList()
