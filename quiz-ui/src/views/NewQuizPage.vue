@@ -1,7 +1,6 @@
 <template>
 
-      <div class="d-flex flex-column h-100 w-100 align-items-center justify-content-around">
-        <h1>Nouveau Quiz</h1>
+      <div>
         <div v-if="numberQuestion">
 
           <p> Saisissez votre nom :<br></p>

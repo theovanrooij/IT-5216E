@@ -1,7 +1,7 @@
 <template>
   <form >
     <div class="row g-2 d-flex flex-wrap flex-column my-5 align-items-center">
-      <h2 class="text-center">Editition de question</h2>
+      <h2 class="text-center">Edition de question</h2>
       <div class="col-md my-3">
         <div class="form-floating">
           <input type="text" class="form-control" id="floatingInputGrid" placeholder="Title" v-model="question.title">
