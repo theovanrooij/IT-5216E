@@ -5,6 +5,11 @@ import services
 app = Flask(__name__)
 CORS(app)
 
+@app.before_first_request
+def startup():
+    # do something here
+    services.rebuildDB()
+
 @app.route('/')
 def hello_world():
 	x = 'world'
